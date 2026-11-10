@@ -1,0 +1,85 @@
+# NEXORA SYSTEMS — Admin Dashboard
+
+Frontend-only enterprise SaaS admin dashboard demo. 10 fully interactive pages, dark mode, responsive down to 390px — zero backend, all state is local mock data.
+
+> **This is a demo.** Every entity (employees, payroll, inventory, procurement, …) is mock data. No API calls, no persistence beyond `localStorage` UI preferences.
+
+## Quick start
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+```
+
+Other scripts:
+
+```bash
+npm run build      # typecheck (tsc --noEmit) + production build to dist/
+npm run preview    # serve the production build
+npm run typecheck  # tsc --noEmit only
+```
+
+## Pages
+
+| Route | Page | Highlights |
+|---|---|---|
+| `/` | → redirect | Lands on `/overview` |
+| `/overview` | Overview | Greeting + date, 4 stat cards, 3 charts, activities, pending tasks (navigate), employee table |
+| `/analytics` | Analytics | Business stat tiles, attendance/inventory/department analytics |
+| `/employees` | Employees | Search + department/status filters, sorting, pagination, Add Employee modal, detail drawer (click a row) |
+| `/attendance` | Attendance | Daily records, date/status filters, mock check-in/check-out |
+| `/payroll` | Payroll | Salary table + 6-month payroll history, CSV export |
+| `/inventory` | Inventory | Stock levels with low-stock badges, Add Item modal, Stock In/Out adjustments |
+| `/procurement` | Procurement | Purchase requests (approve/reject via detail drawer), supplier ratings |
+| `/reports` | Reports | 6 report categories, date range, real CSV generation |
+| `/notifications` | Notifications | Read/unread, mark one or all as read, topbar badge syncs |
+| `/settings` | Settings | Company rename (reflects in topbar), profile, appearance, notification prefs |
+
+## Everything is actually interactive
+
+No decorative buttons. Add employee/item inserts a row; stock in/out changes the numbers; approve/reject updates the PR status; mark-all-read clears the topbar badge; Generate CSV downloads a real file; theme, sidebar state, notification read-state and company rename persist in `localStorage` (`nexora-ui` key).
+
+## Project structure
+
+```
+src/
+├── components/
+│   ├── ui/            # Button, Card, Badge, Input, Modal, Drawer, Dropdown, Tooltip, EmptyState
+│   ├── tables/        # DataTable<T> (generic, sort + pagination), Pagination
+│   ├── charts/        # AttendanceLineChart, InventoryBarChart, DepartmentPieChart + chartTheme
+│   ├── layout/        # Sidebar, Topbar, Breadcrumb, GlobalSearch, NotificationBell, PageHeader, nav.ts
+│   └── dashboard/     # StatCard, StatTile, WelcomeSection, RecentActivities, PendingTasks…
+├── data/              # ← ALL mock data lives here
+├── layouts/           # DashboardLayout (sidebar + topbar + outlet)
+├── pages/             # 10 pages, one folder each (incl. per-page modals/drawers)
+├── routes/            # route table, lazy per page with PageSkeleton fallback
+├── stores/            # zustand uiStore (theme, sidebar, notifications, prefs, companies)
+├── types/             # all shared TypeScript types
+└── utils/             # csv (RFC 4180 + BOM), format (Intl), theme, cn
+```
+
+## Customization points
+
+**Replace mock data** — edit the files in `src/data/`; types in `src/types/index.ts` are the contract. Tables/charts pick changes up automatically.
+
+**Currency & locale** — `src/utils/format.ts`:
+
+```ts
+export function formatCurrency(n: number): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', … }).format(n)
+}
+```
+
+Swap `currency: 'USD'` → `'IDR'` and `en-US` → `'id-ID'` to go full rupiah.
+
+**Theme palette** — charts read from `src/components/charts/chartTheme.ts`; component colors are plain Tailwind classes (slate/blue-600 base).
+
+**Branding** — the sidebar brand block (`components/layout/Sidebar.tsx`), `<title>` in `index.html`, and `public/favicon.svg`.
+
+## Conventions
+
+- React 19 + TypeScript (strict), Vite 8, Tailwind CSS 4 (CSS-first config, `@custom-variant dark`)
+- react-router 7 — each page lazy-loads via named exports (`.then((m) => ({ default: m.X }})`)
+- No `any`; `noUnusedLocals` / `noUnusedParameters` on
+- **Layout gotcha:** every direct child of a grid that holds a table/chart must carry `min-w-0`, or the track expands to the table's `min-w-[640px]` and breaks 390px layout (learned the hard way; verified via a scrollWidth probe on all routes)
+- lucide-react v1 canonical names only — `CircleCheck`, not the removed `CheckCircle2` alias
