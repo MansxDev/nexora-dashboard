@@ -55,8 +55,19 @@ src/
 ├── routes/            # route table, lazy per page with PageSkeleton fallback
 ├── stores/            # zustand uiStore (theme, sidebar, notifications, prefs, companies)
 ├── types/             # all shared TypeScript types
-└── utils/             # csv (RFC 4180 + BOM), format (Intl), theme, cn
+└── utils/             # csv (RFC 4180 + BOM), format (Intl, locale-aware), theme, cn
 ```
+
+## Internationalization (EN ⇄ ID)
+
+The whole UI ships in English and Indonesian. Use the globe button in the topbar to toggle; the choice is stored in `localStorage` (`nexora.locale`) and survives reloads.
+
+- `src/i18n/config.ts` — i18next init. Translations are **bundled** (`import` from `src/locales/*`), not fetched, so there is no flash of raw keys on first paint.
+- `src/locales/en/translation.json` — English (key = original English text, so `en` is effectively the identity map).
+- `src/locales/id/translation.json` — Indonesian. Keys missing here simply fall back to the English key.
+- **Key strategy:** the key is the English string itself, e.g. `t('Total Employees')`. Data-driven strings (`header`, `label`, `hint`, `period`, `title`, `detail`, `name`, `position`, `status`) are translated at render time with `t(prop)`, so `src/data/` stays in one language.
+- Numbers, currency and dates follow the active locale (`en-US` / `id-ID`) via `src/utils/format.ts`.
+- Maintenance scripts in `scripts/`: `i18n-keys.mjs` (collect keys), `i18n-messages.mjs` (regenerate `en.json`), `i18n-extra.mjs` / `i18n-items.mjs` (add translations).
 
 ## Customization points
 
@@ -65,12 +76,16 @@ src/
 **Currency & locale** — `src/utils/format.ts`:
 
 ```ts
+function locale(): string {
+  return i18n.resolvedLanguage?.startsWith('id') ? 'id-ID' : 'en-US'
+}
+
 export function formatCurrency(n: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', … }).format(n)
+  return new Intl.NumberFormat(locale(), { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
 }
 ```
 
-Swap `currency: 'USD'` → `'IDR'` and `en-US` → `'id-ID'` to go full rupiah.
+Swap `currency: 'USD'` → `'IDR'` to go full rupiah; the number/date formatting already follows the active language.
 
 **Theme palette** — charts read from `src/components/charts/chartTheme.ts`; component colors are plain Tailwind classes (slate/blue-600 base).
 

@@ -1,5 +1,6 @@
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { OverviewStat } from '../../types'
 import { cn } from '../../utils/cn'
 import { formatNumber, formatPercent } from '../../utils/format'
@@ -20,6 +21,7 @@ interface StatCardProps {
 }
 
 export function StatCard({ stat, icon: Icon, tone = 'blue' }: StatCardProps) {
+  const { t } = useTranslation()
   const positive = stat.change >= 0
   return (
     <div
@@ -48,8 +50,8 @@ export function StatCard({ stat, icon: Icon, tone = 'blue' }: StatCardProps) {
       <p className="mt-4 text-3xl font-semibold tracking-tight tabular-nums text-slate-900 dark:text-slate-50">
         {formatNumber(stat.value)}
       </p>
-      <p className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">{stat.label}</p>
-      <p className="text-xs text-slate-400 dark:text-slate-500">{stat.period}</p>
+      <p className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">{t(stat.label)}</p>
+      <p className="text-xs text-slate-400 dark:text-slate-500">{t(stat.period)}</p>
     </div>
   )
 }

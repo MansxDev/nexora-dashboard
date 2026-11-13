@@ -12,6 +12,7 @@ import { payrollHistory, payrollRecords, payrollSummary } from '../../data/payro
 import { toCsv, downloadCsv } from '../../utils/csv'
 import { formatCurrency, formatDate, formatNumber } from '../../utils/format'
 import type { PayrollRecord } from '../../types'
+import { useTranslation } from 'react-i18next'
 
 const columnsSalary: Column<PayrollRecord>[] = [
   { key: 'employeeName', header: 'Employee', sortable: true },
@@ -25,6 +26,7 @@ const columnsSalary: Column<PayrollRecord>[] = [
 ]
 
 export function PayrollPage() {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<string>('All')
 
@@ -55,40 +57,40 @@ export function PayrollPage() {
   return (
     <div className="min-w-0">
       <PageHeader
-        title="Payroll"
-        description="Salary overview, payment status, and payroll history."
+        title={t('Payroll')}
+        description={t('Salary overview, payment status, and payroll history.')}
         actions={
           <Button size="md" variant="outline" onClick={exportCsv}>
             <Download className="h-4 w-4" />
-            Export CSV
+            {t('Export CSV')}
           </Button>
         }
       />
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatTile icon={Wallet} tone="blue" label="Total Payroll · Nov 2026" value={formatCurrency(payrollSummary.totalThisMonth)} hint="248 employees scheduled" />
-        <StatTile icon={Banknote} tone="green" label="Employees Paid" value={formatNumber(payrollSummary.paid)} hint="Transferred to bank accounts" />
-        <StatTile icon={Clock} tone="amber" label="Pending Payments" value={formatNumber(payrollSummary.pending)} hint="Waiting for approval" />
-        <StatTile icon={FileSpreadsheet} tone="slate" label="Processing" value={formatNumber(payrollSummary.processing)} hint="Recalculating deductions" />
+        <StatTile icon={Wallet} tone="blue" label={t('Total Payroll · Nov 2026')} value={formatCurrency(payrollSummary.totalThisMonth)} hint="248 employees scheduled" />
+        <StatTile icon={Banknote} tone="green" label={t('Employees Paid')} value={formatNumber(payrollSummary.paid)} hint="Transferred to bank accounts" />
+        <StatTile icon={Clock} tone="amber" label={t('Pending Payments')} value={formatNumber(payrollSummary.pending)} hint="Waiting for approval" />
+        <StatTile icon={FileSpreadsheet} tone="slate" label={t('Processing')} value={formatNumber(payrollSummary.processing)} hint="Recalculating deductions" />
       </div>
 
       <div className="grid gap-4 min-w-0">
         <Card className="min-w-0">
-          <CardHeader title="Employee Salary Table" subtitle="November 2026 payroll draft" />
+          <CardHeader title={t('Employee Salary Table')} subtitle={t('November 2026 payroll draft')} />
           <div className="grid gap-2 px-5 pb-4 sm:grid-cols-[minmax(0,1fr)_170px]">
-            <SearchInput value={search} onChange={setSearch} placeholder="Search employee or department..." />
+            <SearchInput value={search} onChange={setSearch} placeholder={t('Search employee or department...')} />
             <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value="All">All Statuses</option>
-              <option value="Paid">Paid</option>
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
+              <option value="All">{t('All Statuses')}</option>
+              <option value="Paid">{t('Paid')}</option>
+              <option value="Pending">{t('Pending')}</option>
+              <option value="Processing">{t('Processing')}</option>
             </Select>
           </div>
           <DataTable rows={salaryRows} columns={columnsSalary} rowKey={(r) => r.id} pageSize={8} />
         </Card>
 
         <Card className="min-w-0">
-          <CardHeader title="Payroll History" subtitle="Processed payroll runs, last 6 months" />
+          <CardHeader title={t('Payroll History')} subtitle={t('Processed payroll runs, last 6 months')} />
           <DataTable
             rows={payrollHistory}
             pageSize={6}

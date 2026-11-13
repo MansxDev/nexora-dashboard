@@ -2,6 +2,7 @@ import { Building2, Check, ChevronDown } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { useUiStore } from '../../stores/uiStore'
 import { Dropdown, DropdownItem, DropdownLabel, useDropdownClose } from '../ui/Dropdown'
+import { useTranslation } from 'react-i18next'
 
 interface CompanySelectorProps {
   className?: string
@@ -10,6 +11,7 @@ interface CompanySelectorProps {
 }
 
 export function CompanySelector({ className, variant = 'pill' }: CompanySelectorProps) {
+  const { t } = useTranslation()
   const companies = useUiStore((s) => s.companies)
   const activeCompanyId = useUiStore((s) => s.activeCompanyId)
   const setActiveCompany = useUiStore((s) => s.setActiveCompany)
@@ -36,7 +38,7 @@ export function CompanySelector({ className, variant = 'pill' }: CompanySelector
         </span>
       }
     >
-      <DropdownLabel>Switch company</DropdownLabel>
+      <DropdownLabel>{t('Switch company')}</DropdownLabel>
       {companies.map((c) => {
         const isActive = c.id === activeCompanyId
         return (

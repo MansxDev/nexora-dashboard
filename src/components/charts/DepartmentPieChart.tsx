@@ -2,9 +2,11 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import type { DepartmentSlice } from '../../types'
 import { useUiStore } from '../../stores/uiStore'
 import { chartPalette } from './chartTheme'
+import { useTranslation } from 'react-i18next'
 
 /** Donut chart without embedded labels — legend renders as HTML beside it. */
 export function DepartmentPieChart({ data }: { data: DepartmentSlice[] }) {
+  const { t } = useTranslation()
   const theme = useUiStore((s) => s.theme)
   const p = chartPalette(theme)
   const total = data.reduce((sum, d) => sum + d.value, 0)
@@ -32,7 +34,7 @@ export function DepartmentPieChart({ data }: { data: DepartmentSlice[] }) {
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">{total}</span>
-          <span className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Employees</span>
+          <span className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">{t('Employees')}</span>
         </div>
       </div>
       <ul className="w-full flex-1 space-y-2.5">
@@ -42,7 +44,7 @@ export function DepartmentPieChart({ data }: { data: DepartmentSlice[] }) {
               className="h-2.5 w-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: p.slices[i % p.slices.length] }}
             />
-            <span className="flex-1 text-slate-600 dark:text-slate-300">{slice.name}</span>
+            <span className="flex-1 text-slate-600 dark:text-slate-300">{t(slice.name)}</span>
             <span className="font-medium tabular-nums text-slate-900 dark:text-slate-100">{slice.value}</span>
             <span className="w-10 text-right text-xs text-slate-400 tabular-nums">
               {Math.round((slice.value / total) * 100)}%

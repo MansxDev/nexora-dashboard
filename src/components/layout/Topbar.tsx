@@ -18,8 +18,10 @@ import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 import { Breadcrumb } from './Breadcrumb'
 import { GlobalSearch } from './GlobalSearch'
+import { LanguageToggle } from './LanguageToggle'
 import { NotificationBell } from './NotificationBell'
 import { CompanySelector } from './CompanySelector'
+import { useTranslation } from 'react-i18next'
 
 const iconBtn =
   'grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
@@ -35,41 +37,42 @@ function ThemeToggle() {
 }
 
 function HelpButton() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={iconBtn} aria-label="Help">
+      <button type="button" onClick={() => setOpen(true)} className={iconBtn} aria-label={t('Help')}>
         <CircleHelp className="h-[18px] w-[18px]" />
       </button>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Help & Support"
-        description="NEXORA Center v1.0.0 — demo build"
+        title={t('Help & Support')}
+        description={t('NEXORA Center v1.0.0 — demo build')}
         size="sm"
         footer={
           <>
             <Button variant="secondary" size="sm" onClick={() => setOpen(false)}>
-              Close
+              {t('Close')}
             </Button>
             <a
               href="mailto:support@nexora.io"
               className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-medium text-white transition-colors hover:bg-blue-700"
             >
               <Mail className="h-3.5 w-3.5" />
-              Contact Support
+              {t('Contact Support')}
             </a>
           </>
         }
       >
         <div className="space-y-2.5 pt-1">
           <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-            <p className="font-medium text-slate-800 dark:text-slate-100">Quick start</p>
-            <p className="mt-1 text-xs leading-relaxed">Open the sidebar to explore each module. Press Escape to close panels, and use the search box to jump between employees and inventory items.</p>
+            <p className="font-medium text-slate-800 dark:text-slate-100">{t('Quick start')}</p>
+            <p className="mt-1 text-xs leading-relaxed">{t('Open the sidebar to explore each module. Press Escape to close panels, and use the search box to jump between employees and inventory items.')}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-            <p className="font-medium text-slate-800 dark:text-slate-100">Support</p>
-            <p className="mt-1 text-xs leading-relaxed">For issues in this demo workspace, email support@nexora.io. Admin response window: 1 business day.</p>
+            <p className="font-medium text-slate-800 dark:text-slate-100">{t('Support')}</p>
+            <p className="mt-1 text-xs leading-relaxed">{t('For issues in this demo workspace, email support@nexora.io. Admin response window: 1 business day.')}</p>
           </div>
         </div>
       </Modal>
@@ -78,6 +81,7 @@ function HelpButton() {
 }
 
 function UserMenu() {
+  const { t } = useTranslation()
   const unread = useUiStore(unreadCount)
   const close = useDropdownClose()
   const navigate = useNavigate()
@@ -94,30 +98,30 @@ function UserMenu() {
         <span className="flex items-center gap-2.5 rounded-lg p-1 pr-1.5 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-600 text-xs font-semibold text-white">AD</span>
           <span className="hidden min-w-0 leading-tight lg:block">
-            <span className="block text-[13px] font-medium text-slate-800 dark:text-slate-100">Administrator</span>
-            <span className="block text-[11px] text-slate-500 dark:text-slate-400">Super Admin</span>
+            <span className="block text-[13px] font-medium text-slate-800 dark:text-slate-100">{t('Administrator')}</span>
+            <span className="block text-[11px] text-slate-500 dark:text-slate-400">{t('Super Admin')}</span>
           </span>
           <ChevronDown className="hidden h-3.5 w-3.5 text-slate-400 lg:block" />
         </span>
       }
     >
       <div className="px-2.5 py-2">
-        <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">Administrator</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400">NEXORA Demo Company</p>
+        <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">{t('Administrator')}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t('NEXORA Demo Company')}</p>
       </div>
       <DropdownDivider />
       <DropdownItem icon={<User className="h-4 w-4" />} onClick={() => go('/settings')}>
-        View profile
+        {t('View profile')}
       </DropdownItem>
       <DropdownItem icon={<Settings className="h-4 w-4" />} onClick={() => go('/settings')}>
-        Preferences
+        {t('Preferences')}
       </DropdownItem>
       <DropdownItem icon={<Package className="h-4 w-4" />} onClick={() => go('/inventory')}>
-        Inventory overview
+        {t('Inventory overview')}
       </DropdownItem>
       <DropdownDivider />
       <div className="flex items-center justify-between px-2.5 py-1.5">
-        <span className="text-xs text-slate-500 dark:text-slate-400">Unread alerts</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">{t('Unread alerts')}</span>
         <span className="grid h-5 min-w-5 place-items-center rounded-full bg-red-100 px-1.5 text-[11px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
           {unread}
         </span>
@@ -127,6 +131,7 @@ function UserMenu() {
 }
 
 export function Topbar() {
+  const { t } = useTranslation()
   const setMobileDrawer = useUiStore((s) => s.setMobileDrawer)
 
   return (
@@ -134,7 +139,7 @@ export function Topbar() {
       <button
         type="button"
         onClick={() => setMobileDrawer(true)}
-        aria-label="Open menu"
+        aria-label={t('Open menu')}
         className={cn(iconBtn, 'lg:hidden')}
       >
         <Menu className="h-5 w-5" />
@@ -142,6 +147,7 @@ export function Topbar() {
       <Breadcrumb />
       <div className="flex-1" />
       <GlobalSearch />
+      <LanguageToggle />
       <ThemeToggle />
       <HelpButton />
       <NotificationBell />

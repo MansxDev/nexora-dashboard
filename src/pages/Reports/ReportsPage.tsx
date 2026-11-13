@@ -12,6 +12,7 @@ import { payrollHistory } from '../../data/payroll'
 import { inventoryItems } from '../../data/inventory'
 import { purchaseRequests } from '../../data/procurement'
 import { departmentDistribution } from '../../data/dashboard'
+import { useTranslation } from 'react-i18next'
 
 type ReportCategory = 'employees' | 'attendance' | 'payroll' | 'inventory' | 'procurement' | 'departments'
 
@@ -37,6 +38,7 @@ function sliceByDate<T>(rows: T[], getDate: (r: T) => string, from: string, to: 
 }
 
 export function ReportsPage() {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<ReportCategory>('employees')
   const [from, setFrom] = useState('2026-10-10')
   const [to, setTo] = useState('2026-11-10')
@@ -152,12 +154,19 @@ export function ReportsPage() {
     if (!rangeValid) return
     const csv = report.buildCsv()
     downloadCsv(`nexora-${selected}-report.csv`, csv)
-    setMessage(`Exported ${report.count} row${report.count === 1 ? '' : 's'} for “${report.meta.label}” (${from} → ${to}). Check your downloads.`)
+    setMessage(
+      t('Exported {{count}} rows for “{{label}}” ({{from}} → {{to}}). Check your downloads.', {
+        count: report.count,
+        label: t(report.meta.label),
+        from: t(from),
+        to: t(to),
+      }),
+    )
   }
 
   return (
     <div className="min-w-0">
-      <PageHeader title="Reports" description="Generate operational reports and export them as CSV." />
+      <PageHeader title={t('Reports')} description={t('Generate operational reports and export them as CSV.')} />
 
       <div className="grid min-w-0 gap-4 xl:grid-cols-3">
         <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:col-span-2">
@@ -186,23 +195,23 @@ export function ReportsPage() {
                 <Icon className="h-4.5 w-4.5" />
               </div>
               <p className={cn('mt-3 text-sm font-semibold', selected === id ? 'text-blue-700 dark:text-blue-300' : 'text-slate-800 dark:text-slate-100')}>
-                {label}
+                {t(label)}
               </p>
-              <p className="mt-0.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{description}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{t(description)}</p>
             </button>
           ))}
         </div>
 
         <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">Generate export</h3>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Rows are filtered by the report's date field.</p>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">{t('Generate export')}</h3>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t('Rows are filtered by the report\'s date field.')}</p>
 
           <div className="mt-4 grid gap-3">
-            <Input label="From date" type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
-            <Input label="To date" type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+            <Input label={t('From date')} type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <Input label={t('To date')} type="date" value={to} onChange={(e) => setTo(e.target.value)} />
             <Button size="md" onClick={generate} disabled={!rangeValid}>
               <Download className="h-4 w-4" />
-              Generate CSV
+              {t('Generate CSV')}
             </Button>
             {!rangeValid ? (
               <p className="flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400">

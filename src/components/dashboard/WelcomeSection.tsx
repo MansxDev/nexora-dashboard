@@ -1,4 +1,5 @@
 import { Download } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useUiStore } from '../../stores/uiStore'
 import { CompanySelector } from '../layout/CompanySelector'
 import { Button } from '../ui/Button'
@@ -7,6 +8,7 @@ import { greeting, todayLabel } from '../../utils/format'
 import { overviewStats } from '../../data/dashboard'
 
 export function WelcomeSection() {
+  const { t } = useTranslation()
   const companies = useUiStore((s) => s.companies)
   const activeCompanyId = useUiStore((s) => s.activeCompanyId)
   const active = companies.find((c) => c.id === activeCompanyId)
@@ -28,7 +30,7 @@ export function WelcomeSection() {
           {greeting()}, Administrator
         </h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Here's what's happening with your organization today.
+          {t('Here\'s a summary of your organization\'s activity today.')}
         </p>
         <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
           {todayLabel()}
@@ -38,10 +40,10 @@ export function WelcomeSection() {
         <CompanySelector />
         <Button size="md" onClick={exportReport}>
           <Download className="h-4 w-4" />
-          Export Report
+          {t('Export Report')}
         </Button>
       </div>
-      <span className="sr-only">Active company: {active?.name}</span>
+      <span className="sr-only">{t('Active company')}: {active?.name}</span>
     </div>
   )
 }

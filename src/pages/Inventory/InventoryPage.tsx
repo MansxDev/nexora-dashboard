@@ -15,11 +15,13 @@ import { formatDate, formatNumber } from '../../utils/format'
 import { InventoryBarChart } from '../../components/charts/InventoryBarChart'
 import { AddItemModal, StockAdjustModal } from './InventoryModals'
 import type { InventoryItem } from '../../types'
+import { useTranslation } from 'react-i18next'
 
 const allCategories = ['All', ...inventoryCategories] as const
 const todayIso = () => new Date().toISOString().slice(0, 10)
 
 export function InventoryPage() {
+  const { t } = useTranslation()
   const [items, setItems] = useState<InventoryItem[]>(seed)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<string>('All')
@@ -82,7 +84,7 @@ export function InventoryPage() {
 
   const columns: Column<InventoryItem>[] = [
     { key: 'sku', header: 'SKU', sortable: true, render: (i) => <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{i.sku}</span> },
-    { key: 'name', header: 'Item', sortable: true, render: (i) => <span className="font-medium text-slate-800 dark:text-slate-100">{i.name}</span> },
+    { key: 'name', header: 'Item', sortable: true, render: (i) => <span className="font-medium text-slate-800 dark:text-slate-100">{t(i.name)}</span> },
     { key: 'category', header: 'Category', sortable: true },
     {
       key: 'stock',
@@ -92,7 +94,7 @@ export function InventoryPage() {
       render: (i) => (
         <span className="whitespace-nowrap tabular-nums">
           <span className="font-semibold text-slate-900 dark:text-slate-100">{formatNumber(i.stock)}</span>{' '}
-          <span className="text-xs text-slate-400">{i.unit}</span>
+          <span className="text-xs text-slate-400">{t(i.unit)}</span>
         </span>
       ),
     },
@@ -104,9 +106,9 @@ export function InventoryPage() {
       sortValue: (i) => (i.stock <= i.minStock ? 0 : 1),
       render: (i) =>
         i.stock <= i.minStock ? (
-          <Badge tone="danger">Low Stock</Badge>
+          <Badge tone="danger">{t('Low Stock')}</Badge>
         ) : (
-          <Badge tone="success">Healthy</Badge>
+          <Badge tone="success">{t('Healthy')}</Badge>
         ),
     },
     { key: 'lastUpdate', header: 'Last Update', align: 'right', render: (i) => <span className="whitespace-nowrap">{formatDate(i.lastUpdate)}</span> },
@@ -119,9 +121,9 @@ export function InventoryPage() {
           size="sm"
           variant="ghost"
           onClick={() => setAdjustTarget(i)}
-          aria-label={`Adjust stock of ${i.name}`}
+          aria-label={t('Adjust stock of {{item}}', { item: t(i.name) })}
         >
-          Adjust
+          {t('Adjust')}
         </Button>
       ),
     },
@@ -130,37 +132,37 @@ export function InventoryPage() {
   return (
     <div className="min-w-0">
       <PageHeader
-        title="Inventory"
-        description="Track stock levels, movements, and low-stock alerts."
+        title={t('Inventory')}
+        description={t('Track stock levels, movements, and low-stock alerts.')}
         actions={
           <>
             <Button variant="outline" size="md" onClick={exportCsv}>
               <Download className="h-4 w-4" />
-              Export CSV
+              {t('Export CSV')}
             </Button>
             <Button size="md" onClick={() => setAddOpen(true)}>
               <Plus className="h-4 w-4" />
-              Add Item
+              {t('Add Item')}
             </Button>
           </>
         }
       />
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatTile icon={Boxes} tone="blue" label="Total Products" value={formatNumber(stats.totalProducts)} hint="Active SKUs" />
-        <StatTile icon={PackageSearch} tone="rose" label="Low Stock Items" value={formatNumber(stats.lowStock)} hint="At or below minimum" />
-        <StatTile icon={Package} tone="green" label="Total Units" value={formatNumber(stats.totalUnits)} hint="Across all SKUs" />
-        <StatTile icon={Hourglass} tone="amber" label="Pending Transactions" value={formatNumber(stats.pendingTx)} hint="Waiting for approval" />
+        <StatTile icon={Boxes} tone="blue" label={t('Total Products')} value={formatNumber(stats.totalProducts)} hint="Active SKUs" />
+        <StatTile icon={PackageSearch} tone="rose" label={t('Low Stock Items')} value={formatNumber(stats.lowStock)} hint="At or below minimum" />
+        <StatTile icon={Package} tone="green" label={t('Total Units')} value={formatNumber(stats.totalUnits)} hint="Across all SKUs" />
+        <StatTile icon={Hourglass} tone="amber" label={t('Pending Transactions')} value={formatNumber(stats.pendingTx)} hint="Waiting for approval" />
       </div>
 
       <div className="grid min-w-0 gap-4">
         <Card className="min-w-0">
           <div className="grid gap-2 px-5 pt-5 pb-4 sm:grid-cols-[minmax(0,1fr)_190px]">
-            <SearchInput value={search} onChange={setSearch} placeholder="Search item, SKU, or category..." />
+            <SearchInput value={search} onChange={setSearch} placeholder={t('Search item, SKU, or category...')} />
             <Select value={category} onChange={(e) => setCategory(e.target.value)}>
               {allCategories.map((c) => (
                 <option key={c} value={c}>
-                  {c === 'All' ? 'All Categories' : c}
+                  {c === 'All' ? t('All Categories') : t(c)}
                 </option>
               ))}
             </Select>
@@ -171,8 +173,8 @@ export function InventoryPage() {
         <Card className="min-w-0">
           <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">Stock Movement</h3>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Stock in vs stock out, last 6 months</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">{t('Stock Movement')}</h3>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t('Stock in vs stock out, last 6 months')}</p>
             </div>
           </div>
           <div className="px-5 pb-5">

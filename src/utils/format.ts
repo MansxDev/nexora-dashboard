@@ -1,11 +1,24 @@
-/** Number formatting helpers (en-US display, easy to switch locale). */
+import i18n from '../i18n/config'
+
+/**
+ * Helper format angka/tanggal.
+ * Locale mengikuti bahasa aktif (en → en-US, id → id-ID),
+ * jadi pemisah ribuan dan nama bulan ikut berubah saat bahasa diganti.
+ */
+function locale(): string {
+  return i18n.resolvedLanguage?.startsWith('id') ? 'id-ID' : 'en-US'
+}
 
 export function formatNumber(n: number): string {
-  return new Intl.NumberFormat('en-US').format(n)
+  return new Intl.NumberFormat(locale()).format(n)
 }
 
 export function formatCurrency(n: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
+  return new Intl.NumberFormat(locale(), {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(n)
 }
 
 export function formatPercent(n: number): string {
@@ -14,11 +27,15 @@ export function formatPercent(n: number): string {
 
 export function formatDate(iso: string): string {
   const d = new Date(iso)
-  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
+  return new Intl.DateTimeFormat(locale(), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(d)
 }
 
 export function clockNow(): string {
-  return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+  return new Date().toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })
 }
 
 /** "Andi Prasetyo" → "AP" (avatar fallback initials). */
@@ -31,9 +48,9 @@ export function initials(name: string): string {
     .join('')
 }
 
-/** "Tuesday, 10 November 2026" */
+/** "Tuesday, 10 November 2026" / "Selasa, 10 November 2026" */
 export function todayLabel(date = new Date()): string {
-  return new Intl.DateTimeFormat('en-GB', {
+  return new Intl.DateTimeFormat(locale(), {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -41,9 +58,10 @@ export function todayLabel(date = new Date()): string {
   }).format(date)
 }
 
+/** Sapaan waktu, diterjemahkan lewat i18next. */
 export function greeting(date = new Date()): string {
   const h = date.getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 17) return 'Good afternoon'
-  return 'Good evening'
+  if (h < 12) return i18n.t('Good morning')
+  if (h < 17) return i18n.t('Good afternoon')
+  return i18n.t('Good evening')
 }

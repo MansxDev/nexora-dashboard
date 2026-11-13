@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown, SearchX } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { EmptyState } from '../ui/EmptyState'
 import { Pagination } from './Pagination'
+import { useTranslation } from 'react-i18next'
 
 export interface Column<T> {
   key: string
@@ -61,6 +62,7 @@ export function DataTable<T>({
   emptyDescription = 'Try adjusting your search or filters.',
   initialSort,
 }: DataTableProps<T>) {
+  const { t } = useTranslation()
   const [sort, setSort] = useState<SortState | null>(initialSort ?? null)
   const [page, setPage] = useState(1)
 
@@ -90,7 +92,7 @@ export function DataTable<T>({
   const alignClass = { left: 'text-left', right: 'text-right', center: 'text-center' } as const
 
   if (rows.length === 0) {
-    return <EmptyState icon={SearchX} title={emptyTitle} description={emptyDescription} />
+    return <EmptyState icon={SearchX} title={t(emptyTitle)} description={t(emptyDescription)} />
   }
 
   return (
@@ -121,7 +123,7 @@ export function DataTable<T>({
                           col.align === 'right' && 'flex-row-reverse',
                         )}
                       >
-                        {col.header}
+                        {t(col.header)}
                         {active ? (
                           sort?.dir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
                         ) : (
@@ -129,7 +131,7 @@ export function DataTable<T>({
                         )}
                       </button>
                     ) : (
-                      col.header
+                      t(col.header)
                     )}
                   </th>
                 )
@@ -149,7 +151,7 @@ export function DataTable<T>({
               >
                 {columns.map((col) => (
                   <td key={col.key} className={cn('px-5 py-3 text-slate-700 dark:text-slate-300', alignClass[col.align ?? 'left'])}>
-                    {col.render ? col.render(row) : String((row as unknown as Record<string, unknown>)[col.key] ?? '')}
+                    {col.render ? col.render(row) : t(String((row as unknown as Record<string, unknown>)[col.key] ?? ''))}
                   </td>
                 ))}
               </tr>
@@ -159,8 +161,8 @@ export function DataTable<T>({
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5">
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Showing <span className="font-medium text-slate-700 dark:text-slate-200">{visible.length}</span> of{' '}
-          <span className="font-medium text-slate-700 dark:text-slate-200">{sorted.length}</span> entries
+          {t('Showing')} <span className="font-medium text-slate-700 dark:text-slate-200">{visible.length}</span> {t('of')}{' '}
+          <span className="font-medium text-slate-700 dark:text-slate-200">{sorted.length}</span> {t('entries')}
         </p>
         <Pagination page={current} pageCount={pageCount} onPageChange={setPage} />
       </div>

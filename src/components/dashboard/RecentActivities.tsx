@@ -1,5 +1,6 @@
 import { CalendarCheck, CalendarDays, Package, UserPlus, Banknote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { ActivityKind, ActivityItem } from '../../types'
 import { cn } from '../../utils/cn'
 
@@ -12,6 +13,7 @@ const kindMeta: Record<ActivityKind, { icon: LucideIcon; classes: string }> = {
 }
 
 export function RecentActivities({ items }: { items: ActivityItem[] }) {
+  const { t } = useTranslation()
   return (
     <ol className="relative space-y-1">
       {items.map((item, index) => {
@@ -26,10 +28,10 @@ export function RecentActivities({ items }: { items: ActivityItem[] }) {
               <Icon className="h-4 w-4" aria-hidden="true" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-slate-800 dark:text-slate-100">{item.title}</p>
-              <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">{item.detail}</p>
+              <p className="text-[13px] font-medium text-slate-800 dark:text-slate-100">{t(item.title)}</p>
+              <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">{t(item.detail)}</p>
             </div>
-            <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">{item.time}</span>
+            <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">{t(item.time)}</span>
           </li>
         )
       })}

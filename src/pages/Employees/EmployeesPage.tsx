@@ -13,11 +13,13 @@ import { formatDate, initials } from '../../utils/format'
 import { EmployeeDetailDrawer } from './EmployeeDetailDrawer'
 import { AddEmployeeModal } from './AddEmployeeModal'
 import type { Employee } from '../../types'
+import { useTranslation } from 'react-i18next'
 
 const allDepartments = ['All', ...departments] as const
 const allStatuses = ['All', 'Active', 'Probation', 'On Leave', 'Resigned'] as const
 
 export function EmployeesPage() {
+  const { t } = useTranslation()
   const [list, setList] = useState<Employee[]>(seed)
   const [search, setSearch] = useState('')
   const [dept, setDept] = useState<string>('All')
@@ -95,17 +97,17 @@ export function EmployeesPage() {
   return (
     <div className="min-w-0">
       <PageHeader
-        title="Employees"
-        description="Manage your workforce, onboarding, and employment status."
+        title={t('Employees')}
+        description={t('Manage your workforce, onboarding, and employment status.')}
         actions={
           <>
             <Button variant="outline" size="md" onClick={exportCsv}>
               <Download className="h-4 w-4" />
-              Export CSV
+              {t('Export CSV')}
             </Button>
             <Button size="md" onClick={() => setAddOpen(true)}>
               <Plus className="h-4 w-4" />
-              Add Employee
+              {t('Add Employee')}
             </Button>
           </>
         }
@@ -113,18 +115,18 @@ export function EmployeesPage() {
 
       <Card className="min-w-0">
         <div className="grid gap-2 px-5 pt-5 pb-4 sm:grid-cols-[minmax(0,1fr)_170px_170px]">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search name, ID, position, email..." />
+          <SearchInput value={search} onChange={setSearch} placeholder={t('Search name, ID, position, email...')} />
           <Select value={dept} onChange={(evt) => setDept(evt.target.value)}>
             {allDepartments.map((d) => (
               <option key={d} value={d}>
-                {d === 'All' ? 'All Departments' : d}
+                {d === 'All' ? t('All Departments') : t(d)}
               </option>
             ))}
           </Select>
           <Select value={status} onChange={(evt) => setStatus(evt.target.value)}>
             {allStatuses.map((s) => (
               <option key={s} value={s}>
-                {s === 'All' ? 'All Statuses' : s}
+                {s === 'All' ? t('All Statuses') : t(s)}
               </option>
             ))}
           </Select>

@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { Button } from '../ui/Button'
+import { useTranslation } from 'react-i18next'
 
 interface PaginationProps {
   page: number
@@ -23,18 +24,19 @@ function pageList(page: number, pageCount: number): Array<number | '…'> {
 }
 
 export function Pagination({ page, pageCount, onPageChange }: PaginationProps) {
+  const { t } = useTranslation()
   if (pageCount <= 1) return null
   return (
-    <nav aria-label="Pagination" className="flex flex-wrap items-center justify-end gap-1.5">
+    <nav aria-label={t('Pagination')} className="flex flex-wrap items-center justify-end gap-1.5">
       <Button
         size="sm"
         variant="outline"
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
-        aria-label="Previous page"
+        aria-label={t('Previous page')}
       >
         <ChevronLeft className="h-3.5 w-3.5" />
-        Prev
+        {t('Prev')}
       </Button>
       {pageList(page, pageCount).map((p, i) =>
         p === '…' ? (
@@ -63,9 +65,9 @@ export function Pagination({ page, pageCount, onPageChange }: PaginationProps) {
         variant="outline"
         disabled={page === pageCount}
         onClick={() => onPageChange(page + 1)}
-        aria-label="Next page"
+        aria-label={t('Next page')}
       >
-        Next
+        {t('Next')}
         <ChevronRight className="h-3.5 w-3.5" />
       </Button>
     </nav>

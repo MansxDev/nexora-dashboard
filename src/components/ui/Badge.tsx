@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/cn'
 
 export type BadgeTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral'
@@ -12,6 +13,7 @@ const toneClasses: Record<BadgeTone, string> = {
 }
 
 export function Badge({ tone = 'neutral', className, children }: { tone?: BadgeTone; className?: string; children: ReactNode }) {
+  const { t } = useTranslation()
   return (
     <span
       className={cn(
@@ -20,7 +22,7 @@ export function Badge({ tone = 'neutral', className, children }: { tone?: BadgeT
         className,
       )}
     >
-      {children}
+      {typeof children === 'string' ? t(children) : children}
     </span>
   )
 }

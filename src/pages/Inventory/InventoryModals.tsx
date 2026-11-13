@@ -7,6 +7,7 @@ import { inventoryCategories } from '../../data/inventory'
 import type { InventoryItem } from '../../types'
 import { formatNumber } from '../../utils/format'
 import { ArrowDownToLine, ArrowUpFromLine } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface AddItemModalProps {
   open: boolean
@@ -16,6 +17,7 @@ interface AddItemModalProps {
 }
 
 export function AddItemModal({ open, onClose, nextIndex, onAdd }: AddItemModalProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [sku, setSku] = useState('')
   const [category, setCategory] = useState<string>(inventoryCategories[0])
@@ -43,32 +45,32 @@ export function AddItemModal({ open, onClose, nextIndex, onAdd }: AddItemModalPr
     <Modal
       open={open}
       onClose={onClose}
-      title="Add item"
-      description={`Next SKU ID: INV-${String(nextIndex).padStart(3, '0')}`}
+      title={t('Add item')}
+      description={t('Next SKU ID: {{sku}}', { sku: `INV-${String(nextIndex).padStart(3, '0')}` })}
       footer={
         <>
           <Button variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button size="sm" type="submit" form="add-item-form">
-            Add item
+            {t('Add item')}
           </Button>
         </>
       }
     >
       <form id="add-item-form" onSubmit={handleSubmit} className="grid grid-cols-1 gap-3.5 pt-1 sm:grid-cols-2">
-        <Input label="Item name" required placeholder="e.g. Steel Bolt M8 (100pcs)" value={name} onChange={(e) => setName(e.target.value)} className="sm:col-span-2" />
-        <Input label="SKU" required placeholder="e.g. RM-A110" value={sku} onChange={(e) => setSku(e.target.value)} />
-        <Select label="Category" value={category} onChange={(e) => setCategory(e.target.value)}>
+        <Input label={t('Item name')} required placeholder={t('e.g. Steel Bolt M8 (100pcs)')} value={name} onChange={(e) => setName(e.target.value)} className="sm:col-span-2" />
+        <Input label={t('SKU')} required placeholder={t('e.g. RM-A110')} value={sku} onChange={(e) => setSku(e.target.value)} />
+        <Select label={t('Category')} value={category} onChange={(e) => setCategory(e.target.value)}>
           {inventoryCategories.map((c) => (
             <option key={c} value={c}>
-              {c}
+              {t(c)}
             </option>
           ))}
         </Select>
-        <Input label="Current stock" type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} />
-        <Input label="Minimum stock" type="number" min={0} value={minStock} onChange={(e) => setMinStock(e.target.value)} />
-        <Input label="Unit" placeholder="pcs, pack, drum ..." value={unit} onChange={(e) => setUnit(e.target.value)} className="sm:col-span-2" />
+        <Input label={t('Current stock')} type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} />
+        <Input label={t('Minimum stock')} type="number" min={0} value={minStock} onChange={(e) => setMinStock(e.target.value)} />
+        <Input label={t('Unit')} placeholder={t('pcs, pack, drum ...')} value={unit} onChange={(e) => setUnit(e.target.value)} className="sm:col-span-2" />
       </form>
     </Modal>
   )
@@ -81,6 +83,7 @@ interface StockAdjustModalProps {
 }
 
 export function StockAdjustModal({ item, onClose, onAdjust }: StockAdjustModalProps) {
+  const { t } = useTranslation()
   const [kind, setKind] = useState<'in' | 'out'>('in')
   const [qty, setQty] = useState('1')
 
@@ -96,21 +99,21 @@ export function StockAdjustModal({ item, onClose, onAdjust }: StockAdjustModalPr
     <Modal
       open={Boolean(item)}
       onClose={onClose}
-      title="Stock movement"
-      description={item ? `${item.name} — current stock ${formatNumber(item.stock)} ${item.unit}` : undefined}
+      title={t('Stock movement')}
+      description={item ? t('{{item}} — current stock {{qty}}', { item: t(item.name), qty: `${formatNumber(item.stock)} ${item.unit}` }) : undefined}
       footer={
         <>
           <Button variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button size="sm" type="submit" form="stock-adjust-form">
-            Apply movement
+            {t('Apply movement')}
           </Button>
         </>
       }
     >
       <form id="stock-adjust-form" onSubmit={handleSubmit} className="grid grid-cols-1 gap-3.5 pt-1">
-        <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label="Movement direction">
+        <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={t('Movement direction')}>
           {(
             [
               { value: 'in', label: 'Stock In', icon: ArrowDownToLine },
@@ -131,13 +134,13 @@ export function StockAdjustModal({ item, onClose, onAdjust }: StockAdjustModalPr
               }
             >
               <Icon className="h-4 w-4" />
-              {label}
+              {t(label)}
             </button>
           ))}
         </div>
-        <Input label="Quantity" type="number" min={1} value={qty} onChange={(e) => setQty(e.target.value)} />
+        <Input label={t('Quantity')} type="number" min={1} value={qty} onChange={(e) => setQty(e.target.value)} />
         <p className="text-xs text-slate-400 dark:text-slate-500">
-          Movement is logged locally in this demo — no backend call is made.
+          {t('Movement is logged locally in this demo — no backend call is made.')}
         </p>
       </form>
     </Modal>

@@ -14,6 +14,7 @@ import { clockNow } from '../../utils/format'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { CircleCheck, CalendarX2, Clock, UserX, Plane } from 'lucide-react'
 import type { AttendanceRow } from '../../types'
+import { useTranslation } from 'react-i18next'
 
 const dateOptions = [
   { value: '2026-11-10', label: 'Today — Nov 10, 2026' },
@@ -25,6 +26,7 @@ const summaryIcons = [CircleCheck, Clock, UserX, Plane] as const
 const summaryTones = ['green', 'amber', 'rose', 'blue'] as const
 
 export function AttendancePage() {
+  const { t } = useTranslation()
   const [rows, setRows] = useState<AttendanceRow[]>(seedRows)
   const [search, setSearch] = useState('')
   const [dept, setDept] = useState<string>('All')
@@ -85,25 +87,25 @@ export function AttendancePage() {
         if (r.checkIn === '—') {
           return (
             <Button size="sm" variant="outline" onClick={() => toggleClock(r.id)}>
-              Check in
+              {t('Check in')}
             </Button>
           )
         }
         if (r.checkOut === '—') {
           return (
             <Button size="sm" variant="outline" onClick={() => toggleClock(r.id)}>
-              Check out
+              {t('Check out')}
             </Button>
           )
         }
-        return <span className="text-xs text-slate-400 dark:text-slate-500">Recorded</span>
+        return <span className="text-xs text-slate-400 dark:text-slate-500">{t('Recorded')}</span>
       },
     },
   ]
 
   return (
     <div className="min-w-0">
-      <PageHeader title="Attendance" description="Daily check-in records, late arrivals, and leave tracking." />
+      <PageHeader title={t('Attendance')} description={t('Daily check-in records, late arrivals, and leave tracking.')} />
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {summary.map((s, i) => (
@@ -112,28 +114,28 @@ export function AttendancePage() {
       </div>
 
       <Card className="min-w-0">
-        <CardHeader title="Attendance Records" subtitle="Mock clock actions update the table instantly." />
+        <CardHeader title={t('Attendance Records')} subtitle={t('Mock clock actions update the table instantly.')} />
         <div className="grid gap-2 px-5 pb-4 sm:grid-cols-[minmax(0,1fr)_170px_150px_210px]">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search employee name or ID..." />
+          <SearchInput value={search} onChange={setSearch} placeholder={t('Search employee name or ID...')} />
           <Select value={dept} onChange={(e) => setDept(e.target.value)}>
-            <option value="All">All Departments</option>
+            <option value="All">{t('All Departments')}</option>
             {departments.map((d) => (
               <option key={d} value={d}>
-                {d}
+                {t(d)}
               </option>
             ))}
           </Select>
           <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="All">All Statuses</option>
-            <option value="Present">Present</option>
-            <option value="Late">Late</option>
-            <option value="Absent">Absent</option>
-            <option value="Leave">Leave</option>
+            <option value="All">{t('All Statuses')}</option>
+            <option value="Present">{t('Present')}</option>
+            <option value="Late">{t('Late')}</option>
+            <option value="Absent">{t('Absent')}</option>
+            <option value="Leave">{t('Leave')}</option>
           </Select>
           <Select value={date} onChange={(e) => setDate(e.target.value)}>
             {dateOptions.map((d) => (
               <option key={d.value} value={d.value}>
-                {d.label}
+                {t(d.label)}
               </option>
             ))}
           </Select>
@@ -142,8 +144,8 @@ export function AttendancePage() {
         {filtered.length === 0 ? (
           <EmptyState
             icon={CalendarX2}
-            title="No attendance records for this selection"
-            description="Try switching the date to Today or clearing your filters — the demo dataset only contains records for Nov 10, 2026."
+            title={t('No attendance records for this selection')}
+            description={t('Try switching the date to Today or clearing your filters — the demo dataset only contains records for Nov 10, 2026.')}
             className="pb-6"
           />
         ) : (
@@ -152,8 +154,11 @@ export function AttendancePage() {
       </Card>
 
       <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
-        Attendance summary published daily at 17:00 · today's snapshot: {attendanceStats.presentToday} present · {attendanceStats.late} late ·{' '}
-        {attendanceStats.absent} absent.
+        {t("Attendance summary published daily at 17:00 · today's snapshot: {{present}} present · {{late}} late · {{absent}} absent.", {
+          present: attendanceStats.presentToday,
+          late: attendanceStats.late,
+          absent: attendanceStats.absent,
+        })}
       </p>
     </div>
   )

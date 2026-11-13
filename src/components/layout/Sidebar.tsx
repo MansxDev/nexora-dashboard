@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { ChevronsLeft, ChevronsRight, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/cn'
 import { useUiStore } from '../../stores/uiStore'
 import { Tooltip } from '../ui/Tooltip'
@@ -13,15 +14,16 @@ const itemIdle =
 const itemActive = 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400'
 
 function NavLists({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
+  const { t } = useTranslation()
   return (
-    <nav className="flex-1 overflow-y-auto px-3 pb-2 pt-1" aria-label="Main navigation">
+    <nav className="flex-1 overflow-y-auto px-3 pb-2 pt-1" aria-label={t('Main navigation')}>
       {navSections.map((section) => (
         <div key={section.title} className="mb-1">
           {collapsed ? (
             <div className="mx-2 my-3 border-t border-slate-200 dark:border-slate-800" />
           ) : (
             <p className="px-3 pt-4 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              {section.title}
+              {t(section.title)}
             </p>
           )}
           {section.items.map((item: NavItem) => {
@@ -34,11 +36,11 @@ function NavLists({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: 
                 }
               >
                 <item.icon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
-                {!collapsed ? <span className="truncate">{item.label}</span> : null}
+                {!collapsed ? <span className="truncate">{t(item.label)}</span> : null}
               </NavLink>
             )
             return collapsed ? (
-              <Tooltip key={item.to} label={item.label} className="w-full">
+              <Tooltip key={item.to} label={t(item.label)} className="w-full">
                 {link}
               </Tooltip>
             ) : (
@@ -68,21 +70,23 @@ function Brand({ collapsed }: { collapsed: boolean }) {
 }
 
 function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: () => void }) {
+  const { t } = useTranslation()
   const button = (
     <button
       type="button"
       onClick={onClick}
       className={cn(itemBase, itemIdle, 'w-full', collapsed && 'justify-center px-0')}
-      aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      aria-label={collapsed ? t('Expand sidebar') : t('Collapse sidebar')}
     >
       {collapsed ? <ChevronsRight className="h-[18px] w-[18px]" /> : <ChevronsLeft className="h-[18px] w-[18px]" />}
-      {!collapsed ? <span>Collapse</span> : null}
+      {!collapsed ? <span>{t('Collapse')}</span> : null}
     </button>
   )
-  return <div className="border-t border-slate-200 p-3 dark:border-slate-800">{collapsed ? <Tooltip label="Expand">{button}</Tooltip> : button}</div>
+  return <div className="border-t border-slate-200 p-3 dark:border-slate-800">{collapsed ? <Tooltip label={t('Expand')}>{button}</Tooltip> : button}</div>
 }
 
 export function Sidebar() {
+  const { t } = useTranslation()
   const collapsed = useUiStore((s) => s.sidebarCollapsed)
   const toggleSidebar = useUiStore((s) => s.toggleSidebar)
   const mobileOpen = useUiStore((s) => s.mobileDrawerOpen)
@@ -124,7 +128,7 @@ export function Sidebar() {
             <button
               type="button"
               onClick={() => setMobileDrawer(false)}
-              aria-label="Close menu"
+              aria-label={t('Close menu')}
               className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             >
               <X className="h-4 w-4" />

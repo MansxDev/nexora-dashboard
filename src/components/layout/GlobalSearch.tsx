@@ -4,6 +4,7 @@ import { Package, Search, User } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { employees } from '../../data/employees'
 import { inventoryItems } from '../../data/inventory'
+import { useTranslation } from 'react-i18next'
 
 interface Result {
   id: string
@@ -43,6 +44,7 @@ const panelItemBase =
   'flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-800'
 
 export function GlobalSearch() {
+  const { t } = useTranslation()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -86,7 +88,7 @@ export function GlobalSearch() {
             setOpen(true)
           }}
           onFocus={() => setOpen(true)}
-          placeholder="Search employees, items..."
+          placeholder={t('Search employees, items...')}
           className={cn(
             'h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400',
             'transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20',
@@ -102,12 +104,12 @@ export function GlobalSearch() {
           )}
         >
           {results.length === 0 ? (
-            <p className="px-3 py-2.5 text-sm text-slate-500 dark:text-slate-400">No matches for “{q.trim()}”.</p>
+            <p className="px-3 py-2.5 text-sm text-slate-500 dark:text-slate-400">{t('No matches for “{{term}}”.', { term: q.trim() })}</p>
           ) : (
             groups.map((g) => (
               <div key={g}>
                 <p className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                  {g}
+                  {t(g)}
                 </p>
                 {results
                   .filter((r) => r.group === g)
@@ -117,8 +119,10 @@ export function GlobalSearch() {
                         {r.group === 'Employees' ? <User className="h-4 w-4" /> : <Package className="h-4 w-4" />}
                       </span>
                       <span className="min-w-0">
-                        <span className="block truncate text-[13px] font-medium text-slate-800 dark:text-slate-100">{r.label}</span>
-                        <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{r.sub}</span>
+                        <span className="block truncate text-[13px] font-medium text-slate-800 dark:text-slate-100">{t(r.label)}</span>
+                        <span className="block truncate text-xs text-slate-500 dark:text-slate-400">
+                          {r.sub.split(' · ').map((part) => t(part)).join(' · ')}
+                        </span>
                       </span>
                     </button>
                   ))}

@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '../../utils/cn'
 
 type Tone = 'blue' | 'green' | 'amber' | 'rose' | 'slate'
@@ -22,6 +23,7 @@ interface StatTileProps {
 
 /** Compact stat tile used by secondary pages (Payroll, Inventory, Procurement, Analytics). */
 export function StatTile({ icon: Icon, tone = 'slate', label, value, hint, className }: StatTileProps) {
+  const { t } = useTranslation()
   return (
     <div
       className={cn(
@@ -36,10 +38,10 @@ export function StatTile({ icon: Icon, tone = 'slate', label, value, hint, class
         </div>
         <div className="min-w-0">
           <p className="text-lg font-semibold leading-6 tracking-tight tabular-nums text-slate-900 dark:text-slate-50">{value}</p>
-          <p className="truncate text-xs font-medium text-slate-500 dark:text-slate-400">{label}</p>
+          <p className="truncate text-xs font-medium text-slate-500 dark:text-slate-400">{t(label)}</p>
         </div>
       </div>
-      {hint ? <p className="mt-2 truncate text-[11px] text-slate-400 dark:text-slate-500">{hint}</p> : null}
+      {hint ? <p className="mt-2 truncate text-[11px] text-slate-400 dark:text-slate-500">{t(hint)}</p> : null}
     </div>
   )
 }

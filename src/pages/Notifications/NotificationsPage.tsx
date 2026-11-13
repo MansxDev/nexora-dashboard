@@ -7,6 +7,7 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { useUiStore } from '../../stores/uiStore'
 import type { NotificationKind } from '../../types'
 import { cn } from '../../utils/cn'
+import { useTranslation } from 'react-i18next'
 
 const kindDotColor: Record<NotificationKind, string> = {
   payroll: 'bg-blue-500',
@@ -27,6 +28,7 @@ const kindLabel: Record<NotificationKind, string> = {
 const views = ['All', 'Unread'] as const
 
 export function NotificationsPage() {
+  const { t } = useTranslation()
   const notifications = useUiStore((s) => s.notifications)
   const markRead = useUiStore((s) => s.markNotificationRead)
   const markAll = useUiStore((s) => s.markAllNotificationsRead)
@@ -38,22 +40,22 @@ export function NotificationsPage() {
   return (
     <div className="min-w-0">
       <PageHeader
-        title="Notifications"
-        description="Alerts from payroll, inventory, procurement, and system events."
+        title={t('Notifications')}
+        description={t('Alerts from payroll, inventory, procurement, and system events.')}
         actions={
           <Button size="md" variant="outline" onClick={markAll} disabled={unreadCount === 0}>
             <CheckCheck className="h-4 w-4" />
-            Mark all as read
+            {t('Mark all as read')}
           </Button>
         }
       />
 
       <Card className="min-w-0">
         <CardHeader
-          title="Inbox"
-          subtitle={unreadCount === 0 ? 'All caught up — nothing unread' : `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}`}
+          title={t('Inbox')}
+          subtitle={unreadCount === 0 ? t('All caught up — nothing unread') : t('{{count}} unread notifications', { count: unreadCount })}
           action={
-            <div className="flex rounded-lg border border-slate-200 p-0.5 dark:border-slate-700" role="tablist" aria-label="Filter notifications">
+            <div className="flex rounded-lg border border-slate-200 p-0.5 dark:border-slate-700" role="tablist" aria-label={t('Filter notifications')}>
               {views.map((v) => (
                 <button
                   key={v}
@@ -68,7 +70,7 @@ export function NotificationsPage() {
                       : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100',
                   )}
                 >
-                  {v}
+                  {t(v)}
                 </button>
               ))}
             </div>
@@ -78,8 +80,8 @@ export function NotificationsPage() {
         {visible.length === 0 ? (
           <EmptyState
             icon={BellOff}
-            title="No unread notifications"
-            description="You will see new payroll, inventory, and procurement alerts here."
+            title={t('No unread notifications')}
+            description={t('You will see new payroll, inventory, and procurement alerts here.')}
             className="pb-6"
           />
         ) : (
@@ -100,15 +102,15 @@ export function NotificationsPage() {
                   />
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
-                      <span className={cn('text-sm text-slate-800 dark:text-slate-100', !n.read && 'font-semibold')}>{n.title}</span>
+                      <span className={cn('text-sm text-slate-800 dark:text-slate-100', !n.read && 'font-semibold')}>{t(n.title)}</span>
                       <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                        {kindLabel[n.kind]}
+                        {t(kindLabel[n.kind])}
                       </span>
                     </span>
-                    <span className="mt-1 block text-xs leading-relaxed text-slate-500 dark:text-slate-400">{n.body}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-slate-500 dark:text-slate-400">{t(n.body)}</span>
                   </span>
                   <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">
-                    {n.read ? n.time : <span className="font-medium text-blue-600 dark:text-blue-400">unread · {n.time}</span>}
+                    {n.read ? t(n.time) : <span className="font-medium text-blue-600 dark:text-blue-400">{t('unread')} · {t(n.time)}</span>}
                   </span>
                 </button>
               </li>

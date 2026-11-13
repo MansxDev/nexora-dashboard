@@ -10,6 +10,7 @@ import { useUiStore } from '../../stores/uiStore'
 import { notificationPrefKeys } from '../../types'
 import type { NotificationPrefKey, Theme } from '../../types'
 import { cn } from '../../utils/cn'
+import { useTranslation } from 'react-i18next'
 
 const prefLabels: Record<NotificationPrefKey, { title: string; detail: string }> = {
   payroll: { title: 'Payroll updates', detail: 'Run drafts, approvals, and payments' },
@@ -42,6 +43,7 @@ function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 }
 
 export function SettingsPage() {
+  const { t } = useTranslation()
   const companies = useUiStore((s) => s.companies)
   const activeCompanyId = useUiStore((s) => s.activeCompanyId)
   const renameCompany = useUiStore((s) => s.renameCompany)
@@ -83,29 +85,29 @@ export function SettingsPage() {
 
   return (
     <div className="min-w-0">
-      <PageHeader title="Settings" description="Company profile, personal preferences, and workspace appearance." />
+      <PageHeader title={t('Settings')} description={t('Company profile, personal preferences, and workspace appearance.')} />
 
       <div className="grid min-w-0 gap-4 xl:grid-cols-2">
         <Card className="min-w-0">
           <CardHeader
-            title="Company Profile"
-            subtitle="Showing on invoices, reports, and exports"
-            action={<Badge tone="info">{active.name === companyName ? 'Current' : 'Edited'}</Badge>}
+            title={t('Company Profile')}
+            subtitle={t('Showing on invoices, reports, and exports')}
+            action={<Badge tone="info">{active.name === companyName ? t('Current') : t('Edited')}</Badge>}
           />
           <CardBody>
             <form onSubmit={saveCompany} className="grid gap-3.5 sm:grid-cols-2">
-              <Input label="Company name" required value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="sm:col-span-2" />
-              <Input label="Billing email" type="email" value={companyEmail} onChange={(e) => setCompanyEmail(e.target.value)} />
-              <Input label="Phone" value={companyPhone} onChange={(e) => setCompanyPhone(e.target.value)} />
+              <Input label={t('Company name')} required value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="sm:col-span-2" />
+              <Input label={t('Billing email')} type="email" value={companyEmail} onChange={(e) => setCompanyEmail(e.target.value)} />
+              <Input label={t('Phone')} value={companyPhone} onChange={(e) => setCompanyPhone(e.target.value)} />
               <div className="flex items-center gap-3 sm:col-span-2">
                 <Button type="submit" size="sm">
                   <Building2 className="h-3.5 w-3.5" />
-                  Save changes
+                  {t('Save changes')}
                 </Button>
                 {companySaved ? (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
                     <Check className="h-3.5 w-3.5" />
-                    Saved
+                    {t('Saved')}
                   </span>
                 ) : null}
               </div>
@@ -114,20 +116,20 @@ export function SettingsPage() {
         </Card>
 
         <Card className="min-w-0">
-          <CardHeader title="User Profile" subtitle="Your account within this workspace" />
+          <CardHeader title={t('User Profile')} subtitle={t('Your account within this workspace')} />
           <CardBody>
             <form onSubmit={saveUser} className="grid gap-3.5 sm:grid-cols-2">
-              <Input label="Display name" required value={userName} onChange={(e) => setUserName(e.target.value)} />
-              <Input label="Email" type="email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
+              <Input label={t('Display name')} required value={userName} onChange={(e) => setUserName(e.target.value)} />
+              <Input label={t('Email')} type="email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
               <div className="flex items-center gap-3 sm:col-span-2">
                 <Button type="submit" size="sm">
                   <User className="h-3.5 w-3.5" />
-                  Save profile
+                  {t('Save profile')}
                 </Button>
                 {userSaved ? (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
                     <Check className="h-3.5 w-3.5" />
-                    Saved
+                    {t('Saved')}
                   </span>
                 ) : null}
               </div>
@@ -136,7 +138,7 @@ export function SettingsPage() {
         </Card>
 
         <Card className="min-w-0">
-          <CardHeader title="Appearance" subtitle="Applies immediately and persists across sessions" />
+          <CardHeader title={t('Appearance')} subtitle={t('Applies immediately and persists across sessions')} />
           <CardBody>
             <div className="grid grid-cols-2 gap-3">
               {themeOptions.map(({ id, label, icon: Icon, hint }) => (
@@ -161,8 +163,8 @@ export function SettingsPage() {
                     <Icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className={cn('text-sm font-semibold', theme === id ? 'text-blue-700 dark:text-blue-300' : 'text-slate-800 dark:text-slate-100')}>{label}</p>
-                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">{hint}</p>
+                    <p className={cn('text-sm font-semibold', theme === id ? 'text-blue-700 dark:text-blue-300' : 'text-slate-800 dark:text-slate-100')}>{t(label)}</p>
+                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">{t(hint)}</p>
                   </div>
                 </button>
               ))}
@@ -171,22 +173,22 @@ export function SettingsPage() {
         </Card>
 
         <Card className="min-w-0">
-          <CardHeader title="Notification Preferences" subtitle="Choose the alert categories you want to receive" />
+          <CardHeader title={t('Notification Preferences')} subtitle={t('Choose the alert categories you want to receive')} />
           <CardBody>
             <ul className="divide-y divide-slate-100 dark:divide-slate-800">
               {notificationPrefKeys.map((key) => (
                 <li key={key} className="flex items-center justify-between gap-3 py-3.5 first:pt-0 last:pb-0">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{prefLabels[key].title}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{prefLabels[key].detail}</p>
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{t(prefLabels[key].title)}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t(prefLabels[key].detail)}</p>
                   </div>
-                  <Switch checked={prefs[key]} onChange={(v) => setPref(key, v)} label={prefLabels[key].title} />
+                  <Switch checked={prefs[key]} onChange={(v) => setPref(key, v)} label={t(prefLabels[key].title)} />
                 </li>
               ))}
             </ul>
             <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
               <BellRing className="h-3.5 w-3.5" />
-              Preferences are stored in this browser (localStorage).
+              {t('Preferences are stored in this browser (localStorage).')}
             </p>
           </CardBody>
         </Card>

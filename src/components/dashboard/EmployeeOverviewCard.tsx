@@ -9,10 +9,12 @@ import type { Column } from '../tables/DataTable'
 import type { Employee } from '../../types'
 import { employees, departments } from '../../data/employees'
 import { formatDate, initials } from '../../utils/format'
+import { useTranslation } from 'react-i18next'
 
 const allDepartments = ['All', ...departments] as const
 
 export function EmployeeOverviewCard() {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [dept, setDept] = useState<string>('All')
 
@@ -58,24 +60,24 @@ export function EmployeeOverviewCard() {
   return (
     <Card>
       <CardHeader
-        title="Employee Overview"
-        subtitle="All team members with quick access"
+        title={t('Employee Overview')}
+        subtitle={t('All team members with quick access')}
         action={
           <Link
             to="/employees"
             className="inline-flex items-center gap-1 rounded-lg text-xs font-medium text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400"
           >
-            View all
+            {t('View all')}
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         }
       />
       <div className="grid gap-2 px-5 pb-3 sm:grid-cols-[minmax(0,1fr)_180px]">
-        <SearchInput value={search} onChange={setSearch} placeholder="Search name, ID, position, email..." />
+        <SearchInput value={search} onChange={setSearch} placeholder={t('Search name, ID, position, email...')} />
         <Select value={dept} onChange={(evt) => setDept(evt.target.value)} className="w-full">
           {allDepartments.map((d) => (
             <option key={d} value={d}>
-              {d === 'All' ? 'All Departments' : d}
+              {d === 'All' ? t('All Departments') : t(d)}
             </option>
           ))}
         </Select>

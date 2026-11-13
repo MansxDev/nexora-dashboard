@@ -5,6 +5,7 @@ import { Badge, statusTone } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { Drawer } from '../../components/ui/Drawer'
 import { formatDate, initials } from '../../utils/format'
+import { useTranslation } from 'react-i18next'
 
 interface EmployeeDetailDrawerProps {
   employee: Employee | null
@@ -12,10 +13,11 @@ interface EmployeeDetailDrawerProps {
 }
 
 export function EmployeeDetailDrawer({ employee, onClose }: EmployeeDetailDrawerProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   return (
-    <Drawer open={Boolean(employee)} onClose={onClose} title="Employee Details">
+    <Drawer open={Boolean(employee)} onClose={onClose} title={t('Employee Details')}>
       {employee ? (
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-3.5">
@@ -25,7 +27,7 @@ export function EmployeeDetailDrawer({ employee, onClose }: EmployeeDetailDrawer
             <div className="min-w-0">
               <h3 className="truncate text-base font-semibold text-slate-900 dark:text-slate-50">{employee.name}</h3>
               <p className="truncate text-sm text-slate-500 dark:text-slate-400">
-                {employee.position} · {employee.department}
+                {t(employee.position)} · {t(employee.department)}
               </p>
               <div className="mt-1.5">
                 <Badge tone={statusTone(employee.status)}>{employee.status}</Badge>
@@ -47,8 +49,8 @@ export function EmployeeDetailDrawer({ employee, onClose }: EmployeeDetailDrawer
                 }
               >
                 <Icon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
-                <dt className="w-24 shrink-0 text-xs font-medium text-slate-500 dark:text-slate-400">{label}</dt>
-                <dd className="min-w-0 flex-1 truncate text-sm text-slate-800 dark:text-slate-100">{value}</dd>
+                <dt className="w-24 shrink-0 text-xs font-medium text-slate-500 dark:text-slate-400">{t(label)}</dt>
+                <dd className="min-w-0 flex-1 truncate text-sm text-slate-800 dark:text-slate-100">{typeof value === 'string' ? t(value) : value}</dd>
               </div>
             ))}
           </dl>
@@ -61,15 +63,15 @@ export function EmployeeDetailDrawer({ employee, onClose }: EmployeeDetailDrawer
                 navigate('/attendance')
               }}
             >
-              View attendance
+              {t('View attendance')}
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
             <Button size="sm" variant="secondary" onClick={onClose}>
-              Close
+              {t('Close')}
             </Button>
           </div>
           <p className="text-xs text-slate-400 dark:text-slate-500">
-            Employee ID <span className="font-medium text-slate-500 dark:text-slate-400">{employee.id}</span> — profile data is mock data for the demo build.
+            {t('Employee ID')} <span className="font-medium text-slate-500 dark:text-slate-400">{employee.id}</span> — {t('profile data is mock data for the demo build.')}
           </p>
         </div>
       ) : null}

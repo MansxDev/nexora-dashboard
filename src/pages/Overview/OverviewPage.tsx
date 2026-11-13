@@ -12,6 +12,7 @@ import { attendanceSeries } from '../../data/attendance'
 import { stockFlow } from '../../data/inventory'
 import { departmentDistribution, overviewStats, pendingTasks, recentActivities } from '../../data/dashboard'
 import type { StatKind } from '../../types'
+import { useTranslation } from 'react-i18next'
 
 const statIcons: Record<StatKind, { icon: typeof Users; tone: 'blue' | 'green' | 'amber' | 'rose' }> = {
   employees: { icon: Users, tone: 'blue' },
@@ -21,6 +22,7 @@ const statIcons: Record<StatKind, { icon: typeof Users; tone: 'blue' | 'green' |
 }
 
 export function OverviewPage() {
+  const { t } = useTranslation()
   return (
     <div className="grid gap-4">
       <WelcomeSection />
@@ -34,13 +36,13 @@ export function OverviewPage() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="min-w-0 xl:col-span-2">
-          <CardHeader title="Employee Attendance" subtitle="Present, late, and absent over the last 7 days" />
+          <CardHeader title={t('Employee Attendance')} subtitle={t('Present, late, and absent over the last 7 days')} />
           <CardBody>
             <AttendanceLineChart data={attendanceSeries} />
           </CardBody>
         </Card>
         <Card className="min-w-0">
-          <CardHeader title="Departments" subtitle="Headcount distribution" />
+          <CardHeader title={t('Departments')} subtitle={t('Headcount distribution')} />
           <CardBody className="pt-2">
             <DepartmentPieChart data={departmentDistribution} />
           </CardBody>
@@ -49,13 +51,13 @@ export function OverviewPage() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="min-w-0 xl:col-span-2">
-          <CardHeader title="Inventory Movement" subtitle="Stock in vs stock out, last 6 months" />
+          <CardHeader title={t('Inventory Movement')} subtitle={t('Stock in vs stock out, last 6 months')} />
           <CardBody>
             <InventoryBarChart data={stockFlow} />
           </CardBody>
         </Card>
         <Card className="min-w-0">
-          <CardHeader title="Recent Activities" />
+          <CardHeader title={t('Recent Activities')} />
           <CardBody className="pt-1">
             <RecentActivities items={recentActivities} />
           </CardBody>
@@ -67,7 +69,7 @@ export function OverviewPage() {
           <EmployeeOverviewCard />
         </div>
         <Card className="min-w-0">
-          <CardHeader title="Pending Tasks" subtitle="Waiting for your action" />
+          <CardHeader title={t('Pending Tasks')} subtitle={t('Waiting for your action')} />
           <CardBody className="px-2 pb-4">
             <PendingTasks tasks={pendingTasks} />
           </CardBody>
